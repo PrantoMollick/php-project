@@ -35,27 +35,50 @@
     <hr>
 
     <form action="" method="post">
+        <?php
+            if (isset($_POST['btnedit'])) {
+                $select = $pdo->prepare("select * from tbl_product where id={$_POST['btnedit']} ");
+                $select->execute();
+                while($row = $select->fetch(PDO::FETCH_OBJ)) {
+                    print_r($row);
+                }
+            } else {
+
+            }
+        ?>
         <p><input type="text" name="textname" placeholder="Product Name"></p>
         <p><input type="text" name="textprice" placeholder="Product Price"></p>
         <input type="submit" name="submit" value="save">
+        <br>
+        <br>
+        <table border="1" id="producttable">
+            <thead>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Product Price</th>
+            <th>Edit</th>
+            <th>Delete</th>
+            </thead>
+            <tbody>
+            <?php
+            $select = $pdo->prepare("select * from tbl_product");
+            $select->execute();
+            while($row = $select->fetch(PDO::FETCH_OBJ)) {
+                echo "<tr>";
+                echo "<td>{$row->id}</td>";
+                echo "<td>{$row->productname}</td>";
+                echo "<td>{$row->productprice}</td>";
+                echo "<td><button type='submit' value='{$row->id}' name='btnedit'>EDIT</button></td>";
+                echo "<td><button type='submit' value='{$row->id}' name='btndelete'>DELETE</button></td>";
+                echo "</tr>";
+            }
+            ?>
+            </tbody>
+        </table>
+
     </form>
+
+
 </body>
 </html>
 <hr>
-<?php
-    $select = $pdo->prepare("select * from tbl_product");
-    $select->execute();
-    echo "<pre>";
-
-//    while($row = $select->fetch(PDO::FETCH_OBJ)) {
-//        echo $row[1], "<br>";
-//        print_r($row);
-//        echo $row->productname, "<br>";
-//    }
-
-    $rows = $select->fetchAll();
-    foreach ($rows as $row) {
-        echo $row[1];
-    }
-
-?>
