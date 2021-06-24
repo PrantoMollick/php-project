@@ -20,6 +20,26 @@
         }
     }
 
+    //This is for end of save button
+    if (isset($_POST['btnupdate'])) {
+        $productName = $_POST['textname'];
+        $productPrice = $_POST['textprice'];
+        $id = $_POST['textid'];
+        if(!empty($productName && $productPrice && $id)) {
+            $update = $pdo->prepare("update tbl_product set productname=:pname, productprice=:price where id={$id}");
+            $update->bindParam(':pname', $productName);
+            $update->bindParam(':price', $productPrice);
+            $update->execute();
+            if($update->rowCount()){
+                echo "data update successfully";
+            } else {
+                echo "update FAILED!";
+            }
+
+        } else {
+            echo 'Feild are Empty please Fill Feilds !!!!!';
+        }
+    }
 ?>
 <!doctype html>
 <html lang="en">
@@ -39,16 +59,26 @@
             if (isset($_POST['btnedit'])) {
                 $select = $pdo->prepare("select * from tbl_product where id={$_POST['btnedit']} ");
                 $select->execute();
-                while($row = $select->fetch(PDO::FETCH_OBJ)) {
-                    print_r($row);
-                }
-            } else {
 
+                if($select) {
+                    $row = $select->fetch(PDO::FETCH_OBJ);
+                    print_r($row);
+                    echo "<p><input type='text' name='textname' placeholder='Product Name' value='{$row->productname}'></p>
+                        <p><input type='text' name='textprice' placeholder='Product Price' value='{$row->productprice}'></p>
+                         <input type='hidden' name='textid' value='{$row->id}'>
+                         <button type='submit' name='btnupdate'>UPDATE</button>
+                         <button type='submit' name='btncancel'>Cancel</button>
+                         
+                         ";
+                }
+
+            } else {
+                echo '<p><input type="text" name="textname" placeholder="Product Name"></p>
+                <p><input type="text" name="textprice" placeholder="Product Price"></p>
+                <input type="submit" name="submit" value="save">';
             }
         ?>
-        <p><input type="text" name="textname" placeholder="Product Name"></p>
-        <p><input type="text" name="textprice" placeholder="Product Price"></p>
-        <input type="submit" name="submit" value="save">
+
         <br>
         <br>
         <table border="1" id="producttable">
