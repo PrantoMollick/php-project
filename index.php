@@ -39,7 +39,22 @@
         } else {
             echo 'Feild are Empty please Fill Feilds !!!!!';
         }
+    }//btn update code delete here
+
+    if (isset($_POST['btndelete'])) {
+        $id = $_POST['btndelete'];
+        $delete = $pdo->prepare("delete from tbl_product where id = {$id}");
+        $delete->execute();
+        if($delete->rowCount()) {
+            echo "Delete this statement successfully";
+        } else {
+            echo "Delete fail!!!";
+        }
     }
+
+
+
+
 ?>
 <!doctype html>
 <html lang="en">
